@@ -33,6 +33,19 @@ final public class UNAlertView: UIView {
     // Button alignment
     var buttonAlignment       = UNButtonAlignment.Horizontal
     
+    struct Instance {
+        static var shown = false
+    }
+    
+    public static var isShown:Bool{
+        get{
+            return self.Instance.shown
+        }
+        set{
+            self.Instance.shown = newValue
+        }
+    }
+    
     // Fonts
     var titleFont: UIFont?
     var messageFont: UIFont?
@@ -96,6 +109,7 @@ final public class UNAlertView: UIView {
     // Show an alertview
     public func show() {
         
+        UNAlertView.isShown = true
         // Draw all the subviews
         
         // Remove all the subviews
@@ -133,11 +147,12 @@ final public class UNAlertView: UIView {
         
         // Message
         messageLabel.numberOfLines = 0
-        messageLabel.font = (messageFont != nil) ? messageFont : UIFont.systemFontOfSize(16)
         let messageSize    = messageLabel.sizeThatFits(CGSize(width: kContainerWidth-44, height: 9999))
         messageLabel.frame = CGRect(x: 22, y: currentContentHeight + 10, width: kContainerWidth-44, height: messageSize.height)
         currentContentHeight = getBottomPos(messageLabel)
         messageLabel.textAlignment = messageAlignment
+        messageLabel.font = (messageFont != nil) ? messageFont : UIFont.systemFontOfSize(16)
+        messageLabel.textColor = UIColor.whiteColor()
         containerView.addSubview(messageLabel)
         
         
@@ -169,7 +184,7 @@ final public class UNAlertView: UIView {
         shadowView.frame     = CGRect(x: 0, y: 0, width: kContainerWidth, height: currentContentHeight)
         shadowView.center    = self.center
         containerView.frame  = CGRect(origin: CGPointZero, size: shadowView.frame.size)
-        containerView.backgroundColor = UIColor.whiteColor()
+        containerView.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.8)
         shadowView.addSubview(containerView)
         self.addSubview(shadowView)
         
@@ -191,8 +206,8 @@ final public class UNAlertView: UIView {
     }
     
     // Dismiss the alertview from the keywindow
-    private func dismiss() {
-        
+    public func dismiss() {
+        UNAlertView.isShown = false
         // Apply a fade-out animation
         UIView.animateWithDuration(0.18,
             delay: 0.0,
